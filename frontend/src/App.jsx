@@ -5,6 +5,9 @@ import {
 } from 'recharts';
 import { format, parseISO } from 'date-fns';
 
+// REPLACE THIS with your actual Render URL if it differs slightly
+const API_BASE_URL = "https://reint-wind-challenge.onrender.com/api/wind-data/";
+
 function App() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,12 +27,13 @@ function App() {
       const startUtc = new Date(startDate).toISOString();
       const endUtc = new Date(endDate).toISOString();
       
-      const response = await axios.get(`http://127.0.0.1:8000/api/wind-data/`, {
+      // Updated to use the Production Render URL
+      const response = await axios.get(API_BASE_URL, {
         params: { start: startUtc, end: endUtc, horizon: horizon }
       });
       setData(response.data.data);
     } catch (error) {
-      console.error("Error fetching data from Django:", error);
+      console.error("Error fetching data from Render Backend:", error);
     }
     setLoading(false);
   };
@@ -88,7 +92,7 @@ function App() {
           {loading ? (
             <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-              <p className="font-semibold">Querying Elexon Data...</p>
+              <p className="font-semibold">Querying Render Backend...</p>
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
